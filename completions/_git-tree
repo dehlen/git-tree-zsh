@@ -1,0 +1,12 @@
+#compdef git-tree
+
+_git-tree() {
+	local modes
+    modes=(
+        'switch:Switches to another git worktree'
+        'list:Lists git worktrees and prints path of selected one'
+        'add:Creates a new git worktree. Runs hook.sh if available in root bare repo after creating.'
+        'remove:Removes a git worktree'
+    )
+    _describe "mode" modes
+}
