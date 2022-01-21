@@ -68,7 +68,7 @@ git-tree() {
         worktrees=$(basename $(git worktree list | head -1 | awk '{print $1}'))-worktrees &&
         branches=$(git worktree list) &&
         selection=$(echo "$branches" | fzf-tmux -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
-        git worktree remove $(echo "$selection" | head -1 | awk '{print $1}');
+        git worktree remove --force $(echo "$selection" | head -1 | awk '{print $1}');
     else
         gt_help
     fi
