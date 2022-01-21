@@ -5,8 +5,12 @@ gt_help() {
     echo "fzf powered git worktree helper
 usage: git-tree (switch)               Switches directory
    or: git-tree list (-l | -L)         List git worktrees and print path of selected
-   or: git-tree add (-c | -C)          Creates a new git worktree
+   or: git-tree add (-c | -C)          Creates a new git worktree from an existing remote branch
    or: git-tree remove (-d | -D)       Removes a git worktree
+   or: git-tree new (-n | -N)          Creates a new git worktree with a new local branch
+
+If you add a hook.sh file to your git worktree root this file will be executed whenever a new
+git worktree is created by git-tree add or git-tree new. 
 "
 }
 
@@ -44,6 +48,20 @@ git-tree() {
         if [[ -f "$root/hook.sh" ]]; then
             bash "$root/hook.sh" "$newPath"
         fi
+    elif [ "$1" = "new" ] || [ "$1" = "-n" ] || [ "$1" = "-N" ]; then
+        local root worktrees newPath
+        root=$(git worktree list | head -1 | awk '{print $1}') &&
+        worktrees=$(basename $(git worktree list | head -1 | awk '{print $1}'))-worktrees 
+        if [[ ! -z "$2" ]]; then
+            newPath=$(echo "$root/../$worktrees/$2")
+            git worktree add -b $2 $newPath
+            cd $newPath
+            if [[ -f "$root/hook.sh" ]]; then
+                bash "$root/hook.sh" "$newPath"
+            fi
+        else
+            gt_help
+        fi
     elif [ "$1" = "remove" ] || [ "$1" = "-d" ] || [ "$1" = "-D" ]; then
         local root worktrees branches selection
         root=$(git worktree list | head -1 | awk '{print $1}') &&
@@ -55,3 +73,5 @@ git-tree() {
         gt_help
     fi
 }
+
+alias gt="git-tree"

@@ -5,8 +5,9 @@ _git-tree() {
     modes=(
         'switch:Switches to another git worktree'
         'list:Lists git worktrees and prints path of selected one'
-        'add:Creates a new git worktree. Runs hook.sh if available in root bare repo after creating.'
+        'add:Creates a new git worktree from an existing remote branch'
         'remove:Removes a git worktree'
+        'new:Creates a new git worktree with a new local branch'
     )
     _describe "mode" modes
 }
