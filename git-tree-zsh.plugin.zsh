@@ -14,6 +14,16 @@ git worktree is created by git-tree add or git-tree new. You can skip executing 
 "
 }
 
+gt_is_subdir() {
+    local child="$2"
+    local parent="$1"
+    if [[ "${child##${parent}}" != "$child" ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 git-tree() {
     if ! which fzf-tmux >/dev/null; then
         echo "Error: fzf is not installed, run 'brew install fzf' to install."
@@ -74,9 +84,7 @@ git-tree() {
         worktreepath=$(echo "$root/../$worktrees/$selection")
 
         if [[ ! -z "$selection" ]]; then
-            echo $currentdir
-            echo $worktreepath
-            if [[ "$currentdir" -ef "$worktreepath" ]]; then
+            if gt_is_subdir $(realpath $worktreepath) "$currentdir"; then 
                 cd $root
             fi
             git worktree remove $(echo "$selection" | head -1 | awk '{print $1}') --force;
