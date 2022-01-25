@@ -8,11 +8,13 @@ usage: git-tree (switch | -s | -S)              Switches directory
    or: git-tree add (-a | -A) (--skip)          Creates a new git worktree from an existing remote branch
    or: git-tree remove (-d | -D)                Removes a git worktree
    or: git-tree new (-n | -N) <branch> (--skip) Creates a new git worktree with a new local branch
-   or: git-tree clean (-c | -C)                 Clean all worktrees which do not have a corresponding remote branch and prune worktrees
+   or: git-tree clean (-c | -C) (--dry-run)     Clean all worktrees which do not have a corresponding remote branch
+   or: git-tree prune (-p | -P) (--dry-run)     Prune all worktrees
 
 
 If you add a hook.sh file to your git worktree root this file will be executed whenever a new
-git worktree is created by git-tree add or git-tree new. You can skip executing the script by adding the --skip option to your command. 
+git worktree is created by git-tree add or git-tree new. 
+You can skip executing the script by adding the --skip option to your command. 
 "
 }
 
@@ -133,6 +135,12 @@ git-tree() {
           fi
         else
           echo "No worktrees found without remote."
+        fi
+    elif [ "$1" = "prune" ] || [ "$1" = "-p" ] || [ "$1" = "-P" ]; then
+        if [[ "$2" = "--dry-run" ]]; then
+            git worktree prune --dry-run
+        else
+            git worktree prune
         fi
     else
         gt_help
