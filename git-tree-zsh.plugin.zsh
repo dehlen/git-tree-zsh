@@ -35,7 +35,7 @@ git-tree() {
         branches=$(git worktree list) &&
         selection=$(echo "$branches" |rev|awk '{print $1}'|cut -b 2-|rev|cut -b 2- | fzf-tmux -p 80% --no-sort --ansi -0 --height=50% --preview-window 70% --preview 'if output=$(git log origin/{} --color --graph --oneline &>/dev/null); then git fetch &>/dev/null && git log origin/{} --color --graph --oneline; else echo "No log"; fi' +m) &&
         echo "$selection" | head -1 | awk '{print $1}';
-    elif [ "$1" = "add" ] || [ "$1" = "-c" ] || [ "$1" = "-C" ]; then
+    elif [ "$1" = "add" ] || [ "$1" = "-a" ] || [ "$1" = "-A" ]; then
         local root worktrees remote allbranches branches branch newPath
         root=$(git worktree list | head -1 | awk '{print $1}') &&
         worktrees=$(basename $(git worktree list | head -1 | awk '{print $1}'))-worktrees &&
