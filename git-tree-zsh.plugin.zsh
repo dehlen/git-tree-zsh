@@ -25,7 +25,7 @@ git-tree() {
         root=$(git worktree list | head -1 | awk '{print $1}') &&
         worktrees=$(basename $(git worktree list | head -1 | awk '{print $1}'))-worktrees &&
         branches=$(git worktree list) &&
-        selection=$(echo "$branches" |rev|awk '{print $1}'|cut -b 2-|rev|cut -b 2- | fzf-tmux -p 80% --no-sort --ansi -0 --height=50% --preview-window 70% --preview 'if output=$(git log origin/{} --color --graph --oneline &>/dev/null); then git log origin/{} --color --graph --oneline; else echo "No log"; fi' +m) &&
+        selection=$(echo "$branches" |rev|awk '{print $1}'|cut -b 2-|rev|cut -b 2- | fzf-tmux -p 80% --no-sort --ansi -0 --height=50% --preview-window 70% --preview 'if output=$(git log origin/{} --color --graph --oneline &>/dev/null); then git fetch &>/dev/null && git log origin/{} --color --graph --oneline; else echo "No log"; fi' +m) &&
         worktreepath=$(echo "$root/../$worktrees/$selection") &&
         cd $(echo "$worktreepath");
     elif [ "$1" = "list" ] || [ "$1" = "-l" ] || [ "$1" = "-L" ]; then
@@ -33,7 +33,7 @@ git-tree() {
         root=$(git worktree list | head -1 | awk '{print $1}') &&
         worktrees=$(basename $(git worktree list | head -1 | awk '{print $1}'))-worktrees &&
         branches=$(git worktree list) &&
-        selection=$(echo "$branches" |rev|awk '{print $1}'|cut -b 2-|rev|cut -b 2- | fzf-tmux -p 80% --no-sort --ansi -0 --height=50% --preview-window 70% --preview 'if output=$(git log origin/{} --color --graph --oneline &>/dev/null); then git log origin/{} --color --graph --oneline; else echo "No log"; fi' +m) &&
+        selection=$(echo "$branches" |rev|awk '{print $1}'|cut -b 2-|rev|cut -b 2- | fzf-tmux -p 80% --no-sort --ansi -0 --height=50% --preview-window 70% --preview 'if output=$(git log origin/{} --color --graph --oneline &>/dev/null); then git fetch &>/dev/null && git log origin/{} --color --graph --oneline; else echo "No log"; fi' +m) &&
         echo "$selection" | head -1 | awk '{print $1}';
     elif [ "$1" = "add" ] || [ "$1" = "-c" ] || [ "$1" = "-C" ]; then
         local root worktrees remote allbranches branches branch newPath
@@ -42,7 +42,7 @@ git-tree() {
         remote=$(git remote show) &&
         allbranches=$(git branch -la --sort=-committerdate --format="%(refname:short)") &&
         branches=$(echo "$allbranches" | sed "s/$remote\///g" | awk '! seen[$0]++') &&
-        branch=$(echo "$branches" | fzf-tmux -p 80% --no-sort --ansi -0 --height=50% --preview-window 70% --preview 'if output=$(git log origin/{} --color --graph --oneline &>/dev/null); then git log origin/{} --color --graph --oneline; else echo "No log"; fi' +m) &&
+        branch=$(echo "$branches" | fzf-tmux -p 80% --no-sort --ansi -0 --height=50% --preview-window 70% --preview 'if output=$(git log origin/{} --color --graph --oneline &>/dev/null); then git fetch &>/dev/null && git log origin/{} --color --graph --oneline; else echo "No log"; fi' +m) &&
         newPath=$(echo "$root/../$worktrees/$branch") &&
         git worktree add $newPath $branch &&
         cd $newPath
@@ -68,7 +68,7 @@ git-tree() {
         root=$(git worktree list | head -1 | awk '{print $1}') &&
         worktrees=$(basename $(git worktree list | head -1 | awk '{print $1}'))-worktrees &&
         branches=$(git worktree list) &&
-        selection=$(echo "$branches" |rev|awk '{print $1}'|cut -b 2-|rev|cut -b 2- | fzf-tmux -p 80% --no-sort --ansi -0 --height=50% --preview-window 70% --preview 'if output=$(git log origin/{} --color --graph --oneline &>/dev/null); then git log origin/{} --color --graph --oneline; else echo "No log"; fi' +m) &&
+        selection=$(echo "$branches" |rev|awk '{print $1}'|cut -b 2-|rev|cut -b 2- | fzf-tmux -p 80% --no-sort --ansi -0 --height=50% --preview-window 70% --preview 'if output=$(git log origin/{} --color --graph --oneline &>/dev/null); then git fetch &>/dev/null && git log origin/{} --color --graph --oneline; else echo "No log"; fi' +m) &&
         git worktree remove $(echo "$selection" | head -1 | awk '{print $1}') --force;
     else
         gt_help
