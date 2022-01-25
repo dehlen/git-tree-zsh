@@ -3,14 +3,14 @@ fpath+="${0:h}/completions"
 
 gt_help() {
     echo "fzf powered git worktree helper
-usage: git-tree (switch)               Switches directory
-   or: git-tree list (-l | -L)         List git worktrees and print path of selected
-   or: git-tree add (-c | -C)          Creates a new git worktree from an existing remote branch
-   or: git-tree remove (-d | -D)       Removes a git worktree
-   or: git-tree new (-n | -N)          Creates a new git worktree with a new local branch
+usage: git-tree (switch | -s | -S)              Switches directory
+   or: git-tree list (-l | -L)                  List git worktrees and print path of selected
+   or: git-tree add (-a | -A) (--skip)          Creates a new git worktree from an existing remote branch
+   or: git-tree remove (-d | -D)                Removes a git worktree
+   or: git-tree new (-n | -N) <branch> (--skip) Creates a new git worktree with a new local branch
 
 If you add a hook.sh file to your git worktree root this file will be executed whenever a new
-git worktree is created by git-tree add or git-tree new. 
+git worktree is created by git-tree add or git-tree new. You can skip executing the script by adding the --skip option to your command. 
 "
 }
 
