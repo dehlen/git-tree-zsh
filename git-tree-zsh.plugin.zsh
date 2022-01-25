@@ -57,6 +57,7 @@ git-tree() {
             newPath=$(echo "$root/../$worktrees/$2")
             git worktree add -b $2 $newPath
             cd $newPath
+            git push --set-upstream origin $2
             if [[ -f "$root/hook.sh" ]]; then
                 bash "$root/hook.sh" "$newPath"
             fi
