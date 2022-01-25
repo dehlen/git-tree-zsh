@@ -8,6 +8,8 @@ usage: git-tree (switch | -s | -S)              Switches directory
    or: git-tree add (-a | -A) (--skip)          Creates a new git worktree from an existing remote branch
    or: git-tree remove (-d | -D)                Removes a git worktree
    or: git-tree new (-n | -N) <branch> (--skip) Creates a new git worktree with a new local branch
+   or: git-tree clean (-c | -C)                 Clean all worktrees which do not have a corresponding remote branch and prune worktrees
+
 
 If you add a hook.sh file to your git worktree root this file will be executed whenever a new
 git worktree is created by git-tree add or git-tree new. You can skip executing the script by adding the --skip option to your command. 
@@ -88,6 +90,49 @@ git-tree() {
                 cd $root
             fi
             git worktree remove $(echo "$selection" | head -1 | awk '{print $1}') --force;
+        fi
+    elif [ "$1" = "clean" ] || [ "$1" = "-c" ] || [ "$1" = "-C" ]; then
+        DRYRUN=0
+        if [[ "$2" = "--dry-run" ]]; then
+            DRYRUN=1
+        fi
+
+        WORKTREES_TO_REMOVE=()
+        lines=$(git worktree list |rev|awk '{print $1}'|cut -b 2-|rev|cut -b 2-)
+        declare -a worktrees
+        while read -r line
+        do
+            worktrees+=("$line")            
+        done <<< "$lines"
+        for worktree in $worktrees; do
+          git ls-remote --heads origin $worktree | grep $worktree >/dev/null
+          if [[ "$?" == "1" && $worktree != "bare" ]]; then
+            WORKTREES_TO_REMOVE+=($worktree)
+          fi
+        done
+
+        if [[ ! -z $WORKTREES_TO_REMOVE ]]; then
+          echo "Found ${#WORKTREES_TO_REMOVE[@]} worktree(s) without remote branch"
+          if [ $DRYRUN = 0 ]; then
+            for branch in "${WORKTREES_TO_REMOVE[@]}"
+            do
+              read "CONT?Do you want to remove the worktree: $branch? [y/n] "
+              if [ "$CONT" = "y" ] || [ -z $CONT ]; then
+                git worktree remove "$branch" --force;
+              else
+                echo "No action taken";
+                continue
+              fi
+            done
+          else
+            echo "Would delete the following worktrees:"
+            for branch in "${WORKTREES_TO_REMOVE[@]}"
+            do
+              echo $branch
+            done
+          fi
+        else
+          echo "No worktrees found without remote."
         fi
     else
         gt_help

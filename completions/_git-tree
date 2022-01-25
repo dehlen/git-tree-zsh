@@ -8,6 +8,7 @@ _git-tree() {
         'add:Creates a new git worktree from an existing remote branch'
         'remove:Removes a git worktree'
         'new:Creates a new git worktree with a new local branch'
+        'clean:Clean all worktrees which do not have a corresponding remote branch and prune worktrees'
     )
     _describe "mode" modes
 }
