@@ -20,7 +20,7 @@ git-tree() {
         echo "See https://github.com/junegunn/fzf\n"
         gt_help
         return 1
-    elif [ -z "$1" ] || [ "$1" = "switch" ] || [ "$1" = "-s" ]; then
+    elif [ -z "$1" ] || [ "$1" = "switch" ] || [ "$1" = "-s" ] || [ "$1" = "-S" ]; then
         local root worktrees branches selection worktreepath
         root=$(git worktree list | head -1 | awk '{print $1}') &&
         worktrees=$(basename $(git worktree list | head -1 | awk '{print $1}'))-worktrees &&
