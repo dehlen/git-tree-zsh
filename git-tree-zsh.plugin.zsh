@@ -46,7 +46,7 @@ git-tree() {
         newPath=$(echo "$root/../$worktrees/$branch") &&
         git worktree add $newPath $branch &&
         cd $newPath
-        if [[ -f "$root/hook.sh" && ! -z  "$branch" ]]; then
+        if [[ -f "$root/hook.sh" && ! -z  "$branch" && "$2" != "--skip" ]]; then
             bash "$root/hook.sh" "$newPath"
         fi
     elif [ "$1" = "new" ] || [ "$1" = "-n" ] || [ "$1" = "-N" ]; then
@@ -58,7 +58,7 @@ git-tree() {
             git worktree add -b $2 $newPath
             cd $newPath
             git push --set-upstream origin $2
-            if [[ -f "$root/hook.sh" ]]; then
+            if [[ -f "$root/hook.sh" && "$3" != "--skip" ]]; then
                 bash "$root/hook.sh" "$newPath"
             fi
         else
