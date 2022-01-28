@@ -3,13 +3,13 @@ fpath+="${0:h}/completions"
 
 gt_help() {
     echo "fzf powered git worktree helper
-usage: git-tree (switch | -s | -S)              Switches directory
-   or: git-tree list (-l | -L)                  List git worktrees and print path of selected
-   or: git-tree add (-a | -A) (--skip)          Creates a new git worktree from an existing remote branch
-   or: git-tree remove (-d | -D)                Removes a git worktree
-   or: git-tree new (-n | -N) <branch> (--skip) Creates a new git worktree with a new local branch
-   or: git-tree clean (-c | -C) (--dry-run)     Clean all worktrees which do not have a corresponding remote branch
-   or: git-tree prune (-p | -P) (--dry-run)     Prune all worktrees
+usage: git-tree (switch | -s | -S)                                Switches directory
+   or: git-tree list (-l | -L)                                    List git worktrees and print path of selected
+   or: git-tree add (-a | -A) (--skip)                            Creates a new git worktree from an existing remote branch
+   or: git-tree remove (-d | -D)                                  Removes a git worktree
+   or: git-tree new (-n | -N) <branch> (<remote-branch>) (--skip) Creates a new git worktree with a new local branch
+   or: git-tree clean (-c | -C) (--dry-run)                       Clean all worktrees which do not have a corresponding remote branch
+   or: git-tree prune (-p | -P) (--dry-run)                        Prune all worktrees
 
 
 If you add a hook.sh file to your git worktree root this file will be executed whenever a new
@@ -69,11 +69,30 @@ git-tree() {
         worktrees=$(basename $(git worktree list | head -1 | awk '{print $1}'))-worktrees 
         if [[ ! -z "$2" ]]; then
             newPath=$(echo "$root/../$worktrees/$2")
-            git worktree add -b $2 $newPath
-            cd $newPath
-            git push --set-upstream origin $2
-            if [[ -f "$root/hook.sh" && "$3" != "--skip" ]]; then
-                bash "$root/hook.sh" "$newPath"
+            if [[ -z "$3" ]]; then
+                git worktree add -b $2 $newPath
+                cd $newPath
+                git push --set-upstream origin $2
+
+                if [[ -f "$root/hook.sh" ]]; then
+                    bash "$root/hook.sh" "$newPath"
+                fi
+            elif [[ "$3" = "--skip" ]]; then
+                git worktree add -b $2 $newPath
+                cd $newPath
+                git push --set-upstream origin $2
+            elif [[ "$4" = "--skip" ]]; then
+                git worktree add -b $2 $newPath
+                cd $newPath
+                git push --set-upstream origin $2 $3
+            else
+                git worktree add -b $2 $newPath
+                cd $newPath
+                git push --set-upstream origin $2 $3
+
+                if [[ -f "$root/hook.sh" ]]; then
+                    bash "$root/hook.sh" "$newPath"
+                fi 
             fi
         else
             gt_help
