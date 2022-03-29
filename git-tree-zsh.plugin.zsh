@@ -70,7 +70,7 @@ git-tree() {
         if [[ ! -z "$2" ]]; then
             newPath=$(echo "$root/../$worktrees/$2")
             if [[ -z "$3" ]]; then
-                git worktree add -b $2 $newPath
+                git worktree add -b $2 $newPath origin/develop
                 cd $newPath
                 git push --set-upstream origin $2
 
@@ -78,7 +78,7 @@ git-tree() {
                     bash "$root/hook.sh" "$newPath"
                 fi
             elif [[ "$3" = "--skip" ]]; then
-                git worktree add -b $2 $newPath
+                git worktree add -b $2 $newPath origin/develop
                 cd $newPath
                 git push --set-upstream origin $2
             elif [[ "$4" = "--skip" ]]; then
