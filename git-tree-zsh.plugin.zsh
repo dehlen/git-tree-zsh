@@ -9,7 +9,7 @@ usage: git-tree (switch | -s | -S)                                Switches direc
    or: git-tree remove (-d | -D)                                  Removes a git worktree
    or: git-tree new (-n | -N) <branch> (<remote-branch>) (--skip) Creates a new git worktree with a new local branch
    or: git-tree clean (-c | -C) (--dry-run)                       Clean all worktrees which do not have a corresponding remote branch
-   or: git-tree prune (-p | -P) (--dry-run)                        Prune all worktrees
+   or: git-tree prune (-p | -P) (--dry-run)                       Prune all worktrees
 
 
 If you add a hook.sh file to your git worktree root this file will be executed whenever a new
@@ -72,7 +72,7 @@ git-tree() {
             if [[ -z "$3" ]]; then
                 git worktree add -b $2 $newPath origin/develop
                 cd $newPath
-                git push --set-upstream origin $2
+                # git push --set-upstream origin $2
 
                 if [[ -f "$root/hook.sh" ]]; then
                     bash "$root/hook.sh" "$newPath"
@@ -80,15 +80,15 @@ git-tree() {
             elif [[ "$3" = "--skip" ]]; then
                 git worktree add -b $2 $newPath origin/develop
                 cd $newPath
-                git push --set-upstream origin $2
+                # git push --set-upstream origin $2
             elif [[ "$4" = "--skip" ]]; then
                 git worktree add -b $2 $newPath $3
                 cd $newPath
-                git push --set-upstream origin $2
+                # git push --set-upstream origin $2
             else
                 git worktree add -b $2 $newPath $3
                 cd $newPath
-                git push --set-upstream origin $2
+                # git push --set-upstream origin $2
 
                 if [[ -f "$root/hook.sh" ]]; then
                     bash "$root/hook.sh" "$newPath"
